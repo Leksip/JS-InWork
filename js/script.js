@@ -132,27 +132,28 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal()
         }
     });
-    const modalTimer = setTimeout(openModal,3000);
+    const modalTimer = setTimeout(openModal, 3000);
 
-    function showModalByScroll(){
-        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
-            window.removeEventListener('scroll',showModalByScroll);
+            window.removeEventListener('scroll', showModalByScroll);
         }
     }
 
-    window.addEventListener('scroll',showModalByScroll)
+    window.addEventListener('scroll', showModalByScroll)
 
 
     // Используем классы для карточек
 
     class MenuCard {
-        constructor(src, alt, title, descr, price, parentSelector) {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;
             this.transfer = 27;
             this.parent = document.querySelector(parentSelector);
             this.changeToUAH();
@@ -164,20 +165,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
         render() {
             const element = document.createElement('div');
-            element.innerHTML = ` <div class="menu__item">\n
-                                  <img src=${this.src} alt=${this.alt}>\n
+            if(this.classes.length === 0){
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            }
+            this.classes.forEach(className => element.classList.add(className));
+            element.innerHTML = `<img src=${this.src} alt=${this.alt}>\n
                                    <h3 class="menu__item-subtitle">${this.title}</h3>\n
                                     <div class="menu__item-descr">${this.descr}</div>\n
                                     <div class="menu__item-divider"></div>\n
                                     <div class="menu__item-price">\n
                                         <div class="menu__item-cost">Цена:</div>\n
                                         <div class="menu__item-total"><span>${this.price}</span> грн/день</div>\n
-                                    </div>\n
-                                </div>`;
+                                    </div>\n`
+                                
             this.parent.append(element);
         }
     }
 
-    const fitness = new MenuCard("img/tabs/vegy.jpg",'vegy', 'Меню "Фитнес"','Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 5, '#parent');
+    const fitness = new MenuCard("img/tabs/vegy.jpg",'vegy', 'Меню "Фитнес"','Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 5, '#parent', );
     fitness.render();
 });
